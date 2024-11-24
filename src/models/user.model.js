@@ -18,14 +18,12 @@ var userSchema = new mongoose.Schema(
     },
     mobile: {
       type: String,
-      required: true,
       unique: true,
       minlength: 10,
       maxlength: 15,
     },
     role: {
       type: String,
-      required: true,
       enum: ["owner", "investor"],
     },
     dateOfBirth: {

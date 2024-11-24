@@ -1,5 +1,5 @@
 import jwt from'jsonwebtoken'
-import User from '../models/user.model';
+import User from '../models/user.model.js';
 
 const SECRETKEY = process.env.JWT_SECRET;
 
@@ -16,8 +16,9 @@ const authMiddleware = async(req, res,next)=>{
     try {
         if(token){
             const decode = jwt.verify(token,SECRETKEY);
-            const user = await User.findById(decode?.payload.id);
-            console.log({'User in auth':user});
+            // console.log("decode", decode);
+            const user = await User.findById(decode?.id);
+            // console.log({'User in auth':user});
             req.user = user
             if(user){
             next()
