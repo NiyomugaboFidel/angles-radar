@@ -52,6 +52,20 @@ var userSchema = new mongoose.Schema(
       type: String,
       enum: ["male", "female"],
     },
+    isEmailVerified:{
+      type:Boolean,
+      default:false
+    },
+    isActive:{
+      type:Boolean,
+      default:true,
+      required:true
+    }
+    ,
+    otp:{
+      type:Number,
+
+    }
   },
   {
     timestamps: true, 
