@@ -12,6 +12,7 @@ const createUserSchema = Joi.object({
     .label("Email"),
 
   password: Joi.string().min(6).max(12).pattern(new RegExp('^[a-zA-Z0-9]{6,12}$')).optional(),
+  terms:Joi.boolean()
 }).min(1);
 
 const createUserValidation = async (req, res, next) => {

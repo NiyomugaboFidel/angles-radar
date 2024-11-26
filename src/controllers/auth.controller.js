@@ -1,36 +1,97 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/generateToken.js";
+import generateOTP from "../utils/generateOtp.js";
+import sendEmailVerify from "../services/sendOTPEmailVerify.js";
+import verifyToken from "../utils/verifyToken.js";
 
 const createUser = async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
 
   try {
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Hash password and generate OTP
     const hashedPassword = await bcrypt.hash(password, 10);
+    const otp = generateOTP();
+    const otpExpires = Date.now() + (10 * 60 * 1000); // 10 minutes from now
+  
 
+    // Create new user instance
     const newUser = new User({
       firstName,
       lastName,
       email,
       password: hashedPassword,
+      otp,
+      otpExpires
     });
 
-    await newUser.save();
+    const token = createToken(newUser);
+    await Promise.all([
+      newUser.save(), 
+      sendEmailVerify(email, firstName, otp) 
+    ]);
 
     res
       .status(201)
-      .json({ message: "User created successfully", user: newUser });
+      .json({ message: "User created successfully", user: newUser , token});
   } catch (error) {
     res
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
   }
 };
+
+
+const verifyEmial = async (req, res) => {
+  const { otp, token } = req.body;  
+
+
+  if (!token) {
+    return res.status(400).json({ message: 'Token is required' });
+  }
+
+  try {
+ 
+    const {email, id} = verifyToken(token);
+ 
+
+   
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+
+    if (user.otp !== otp) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+    if (user.otpExpires < Date.now()) {
+      return res.status(400).json({ message: 'OTP has expired' });
+    }
+
+    user.isActive = true;
+    user.isEmailVerified = true
+    user.otp = null;  
+    await user.save();
+
+    res.status(200).json({ message: 'OTP verified successfully' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+};
+
+
+
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -55,6 +116,7 @@ const loginUser = async (req, res) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        profilePic:user.profilePic
       },
       token,
     });
@@ -180,6 +242,7 @@ const getAllUsers = async (req, res) => {
 
 export {
   createUser,
+  verifyEmial,
   loginUser,
   editUserProfile,
   chooseRole,

@@ -18,9 +18,9 @@ var userSchema = new mongoose.Schema(
     },
     mobile: {
       type: String,
-      unique: true,
       minlength: 10,
       maxlength: 15,
+      default: null, // Allows null values
     },
     role: {
       type: String,
@@ -52,25 +52,29 @@ var userSchema = new mongoose.Schema(
       type: String,
       enum: ["male", "female"],
     },
-    isEmailVerified:{
-      type:Boolean,
-      default:false
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
     },
-    isActive:{
-      type:Boolean,
-      default:true,
-      required:true
-    }
-    ,
-    otp:{
-      type:Number,
-
+    isActive: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+    otp: {
+      type: Number,
+    },
+    otpExpires:{
+      type: Date
     }
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
+
+// Ensure mobile field is not unique in the database
+userSchema.index({ mobile: 1 }, { unique: false });
 
 const User = mongoose.model("User", userSchema);
 export default User;
