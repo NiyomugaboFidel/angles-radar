@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/generateToken.js";
-import generateOTP from "../utils/generateOtp.js";
+import generateOTP from "../utils/generateOTP.js";
 import sendEmailVerify from "../services/sendOTPEmailVerify.js";
 import verifyToken from "../utils/verifyToken.js";
 
