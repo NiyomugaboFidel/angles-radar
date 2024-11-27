@@ -13,5 +13,6 @@ router.put("/profile/:id",authMiddleware,editUserProfileValidation, editUserProf
 router.put("/role", authMiddleware , chooseRole);
 router.get("/:id", authMiddleware , getUser);
 router.get("/", authMiddleware , getAllUsers);
+// router.get("/", authMiddleware , getAllUsers);
 
 export default router;
