@@ -12,7 +12,7 @@ const loginSchema = Joi.object({
     .label("Password"),
 });
 
-export const loginValidation = async (req, res, next) => {
+ const loginValidation = async (req, res, next) => {
   const { error } = loginSchema.validate(req.body, {
     abortEarly: false, // Gather all errors instead of stopping at the first one.
   });

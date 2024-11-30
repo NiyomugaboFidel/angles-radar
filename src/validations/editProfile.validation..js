@@ -28,7 +28,7 @@ const userProfileSchema = Joi.object({
     .optional(),
 
 }).min(1); 
-export const editUserProfileValidation = async (req, res, next) => {
+ const editUserProfileValidation = async (req, res, next) => {
   const { error } = userProfileSchema.validate(req.body, {
     abortEarly: false, 
   });
