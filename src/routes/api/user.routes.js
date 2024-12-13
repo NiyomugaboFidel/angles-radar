@@ -1,5 +1,5 @@
 import express from "express";
-import { chooseRole, createUser, editUserProfile, getAllUsers, getUser, loginUser, verifyEmial } from "../../controllers/auth.controller.js";
+import { chooseRole, createUser, editUserProfile, getAllUsers, getUser, loginUser, logout, verifyEmial } from "../../controllers/auth.controller.js";
 import createUserValidation from "../../validations/register.validation.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 import editUserProfileValidation from "../../validations/editProfile.validation..js";
@@ -9,6 +9,7 @@ import loginValidation from "../../validations/login.validation.js";
 router.post("/create", createUserValidation, createUser);
 router.post("/verify-email",verifyEmial);
 router.post("/login", loginValidation, loginUser);
+router.post("/logout",authMiddleware,logout);
 router.put("/profile/:id",authMiddleware,editUserProfileValidation, editUserProfile);
 router.put("/role", authMiddleware , chooseRole);
 router.get("/:id", authMiddleware , getUser);

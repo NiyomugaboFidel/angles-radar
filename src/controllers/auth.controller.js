@@ -241,6 +241,22 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const logout = async(req, res)=>{
+  try {
+    const token = req.headers.authorization?.split(" ")[1]; 
+
+    res.clearCookie("ANGELS_RADAR_JWT", { path: "/" });
+    res.clearCookie("user", { path: "/" });
+    res.clearCookie("role", { path: "/" });
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error) {
+    
+    res
+    .status(500)
+    .json({ message: "Internal Server Error", error: error.message });
+}
+}
 export {
   createUser,
   verifyEmial,
@@ -249,4 +265,5 @@ export {
   chooseRole,
   getUser,
   getAllUsers,
+  logout
 };
