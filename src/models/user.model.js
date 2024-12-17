@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-var userSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -46,7 +46,8 @@ var userSchema = new mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: "https://res.cloudinary.com/dmosnjgob/image/upload/v1732370311/pngegg_zilpcj.png", 
+      default:
+        "https://res.cloudinary.com/dmosnjgob/image/upload/v1732370311/pngegg_zilpcj.png",
     },
     gender: {
       type: String,
@@ -64,16 +65,51 @@ var userSchema = new mongoose.Schema(
     otp: {
       type: Number,
     },
-    otpExpires:{
-      type: Date
-    }
+    otpExpires: {
+      type: Date,
+    },
+    
+    socialMedia: {
+      linkedIn: {
+        type: String,
+        match: [
+          /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/,
+          "Please provide a valid LinkedIn URL",
+        ],
+        default: null,
+      },
+      instagram: {
+        type: String,
+        match: [
+          /^(https?:\/\/)?(www\.)?instagram\.com\/.*$/,
+          "Please provide a valid Instagram URL",
+        ],
+        default: null,
+      },
+      facebook: {
+        type: String,
+        match: [
+          /^(https?:\/\/)?(www\.)?facebook\.com\/.*$/,
+          "Please provide a valid Facebook URL",
+        ],
+        default: null,
+      },
+      github: {
+        type: String,
+        match: [
+          /^(https?:\/\/)?(www\.)?github\.com\/.*$/,
+          "Please provide a valid GitHub URL",
+        ],
+        default: null,
+      },
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// Ensure mobile field is not unique in the database
+
 userSchema.index({ mobile: 1 }, { unique: false });
 
 const User = mongoose.model("User", userSchema);
