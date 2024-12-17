@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const companySchema = new mongoose.Schema(
   {
     companyName: { type: String, required: true },
-    companyType: { type: String }, // e.g., Technology, Finance
+    interestedTags: { type: [String], default: [] },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
