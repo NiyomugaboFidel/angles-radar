@@ -20,28 +20,45 @@ export const createInvestorProfile = async (req, res) => {
         .json({ message: "userId and ticketSize are required." });
     }
 
-    const newInvestorProfile = new InvestorProfile({
-      userId,
-      interestedTags: interestedTags.map(tag => tag.toLowerCase()), 
-      companyType: companyType.toLowerCase(),
-      investmentsType: investmentsType.toLowerCase(),
-      companyStage: companyStage.toLowerCase(),
-      ticketSize,
-    });
+    const existsInvestorProfile = await InvestorProfile.findOne({ userId });
 
-    await newInvestorProfile.save();
+    if (existsInvestorProfile) {
+      // Update existing profile
+      existsInvestorProfile.interestedTags = interestedTags.map(tag => tag.toLowerCase());
+      existsInvestorProfile.companyType = companyType.toLowerCase();
+      existsInvestorProfile.investmentsType = investmentsType.toLowerCase();
+      existsInvestorProfile.companyStage = companyStage.toLowerCase();
+      existsInvestorProfile.ticketSize = ticketSize;
 
-    res.status(201).json({
-      message: "Investor profile created successfully.",
-      investorProfile: newInvestorProfile,
-    });
-  } catch (error) {
-    res
-      .status(500)
-      .json({
-        message: "Error creating investor profile.",
-        error: error.message,
+      await existsInvestorProfile.save();
+
+      return res.status(200).json({
+        message: "Investor profile updated successfully.",
+        investorProfile: existsInvestorProfile,
       });
+    } else {
+      // Create a new investor profile
+      const newInvestorProfile = new InvestorProfile({
+        userId,
+        interestedTags: interestedTags.map(tag => tag.toLowerCase()),
+        companyType: companyType.toLowerCase(),
+        investmentsType: investmentsType.toLowerCase(),
+        companyStage: companyStage.toLowerCase(),
+        ticketSize,
+      });
+
+      await newInvestorProfile.save();
+
+      return res.status(201).json({
+        message: "Investor profile created successfully.",
+        investorProfile: newInvestorProfile,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error processing investor profile.",
+      error: error.message,
+    });
   }
 };
 
