@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const companySchema = new mongoose.Schema(
   {
-    companyName: { type: String, required: true },
+    companyName: { type: String, required: true,unique: true, },
     interestedTags: { type: [String], default: [] },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     createdAt: { type: Date, default: Date.now },

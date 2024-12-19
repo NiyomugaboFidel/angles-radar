@@ -2,7 +2,7 @@ import { Company } from "../models/company.model.js";
 import { TeamMember } from "../models/teamMember.model.js";
 import  User  from "../models/user.model.js"; 
 import { CompanyProfile } from "../models/companyProfile.model.js";
-
+import {CapTable} from '../models/capTable.model.js'
 
 const CompanyController = {
 
@@ -21,7 +21,12 @@ const CompanyController = {
       if (!user) {
         return res.status(404).json({ message: "User not found." });
       }
-
+      console.log(companyName);
+       const existCompany = await Company.findOne({companyName});
+       if(existCompany){
+        return res.status(404).json({ message: "Company with this name already exists." });
+       } 
+  
       const newCompany = new Company({
         companyName: companyName,
         interestedTags: interestedTags || [],
@@ -36,13 +41,18 @@ const CompanyController = {
         role: jobTitle || "Founder",
         imageUrl: user.profilePic || "",
       });
+      const newShareholder = new CapTable({
+        companyId: newCompany._id,
+        shareholder: user.firstName || user.lastName,
+      });
 
-      await teamMember.save();
+     await Promise.all([teamMember.save(), newShareholder.save()])
 
       return res.status(201).json({
         message: "Company and team member created successfully!",
         company: newCompany,
         teamMember,
+        shareholder:newShareholder
       });
     } catch (error) {
       console.error("Error creating company:", error.message);

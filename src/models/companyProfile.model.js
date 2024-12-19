@@ -13,18 +13,19 @@ const companyProfileSchema = new mongoose.Schema(
     background: { type: String }, 
 
     fundRaiseDetails: {
-      raiseGoal: { type: Number, default: 0 },
-      amountRaised: { type: Number, default: 0 },
+      raiseGoal: { type: Number, default: 1 },
+      amountRaised: { type: Number, default: 1 },
       round: { type: String, default: "Pre-seed" },
       stage: { type: String, default: "Pre-Revenue" },
     },
     metrics: {
-      valuation: { type: String },
-      evaluationScore: { type: String },
-      mrr: { type: String },
-      growthRate: { type: String },
-      foundedDate: { type: String },
-      angelOffering: { type: String },
+      valuation: { type: Number, default: 1 , required:true},
+      evaluationScore: { type: Number, default: 1, required:true }, 
+      growthRate: { type: Number, default: 1, required:true }, 
+      mrr: { type: Number, default: 1, required:true }, 
+      fundingRequired: { type: Number, default:0, required:true},
+      foundedDate: { type:Date, default:Date.now, required:true},
+      angelOffering: { type: String, default: 'None' , required:true}, 
     },
   },
   { timestamps: true }

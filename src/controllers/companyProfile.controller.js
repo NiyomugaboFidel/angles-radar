@@ -1,4 +1,6 @@
+import { CapTable } from "../models/capTable.model.js";
 import { CompanyProfile } from "../models/companyProfile.model.js";
+import { TeamMember } from "../models/teamMember.model.js";
 
 const CompanyProfileController = {
   // 1. Create a new company profile
@@ -86,10 +88,15 @@ const CompanyProfileController = {
       if (!companyProfile) {
         return res.status(404).json({ message: "Company profile not found." });
       }
+      const teamMember = await TeamMember.findOne({companyId:companyProfile.companyId})
+      const shareholder = await CapTable.findOne({companyId:companyProfile.companyId})
 
       return res.status(200).json({
-        message: "Company profile retrieved successfully.",
-        data: companyProfile,
+         data:{
+          company:companyProfile,
+          teamMember,
+          shareholder,
+         }
       });
     } catch (error) {
       console.error("Error fetching company profile:", error.message);
