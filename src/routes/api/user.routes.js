@@ -9,7 +9,7 @@ import loginValidation from "../../validations/login.validation.js";
 router.post("/create", createUserValidation, createUser);
 router.post("/verify-email",verifyEmial);
 router.post("/login", loginValidation, loginUser);
-router.post("/logout",authMiddleware,logout);
+router.post("/logout",logout);
 router.put("/profile/:id",authMiddleware,editUserProfileValidation, editUserProfile);
 router.put("/role", authMiddleware , chooseRole);
 router.get("/:id", authMiddleware , getUser);

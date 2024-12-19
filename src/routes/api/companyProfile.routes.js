@@ -17,6 +17,8 @@ router.get("/company-profiles",authMiddleware, CompanyProfileController.getAllCo
 
 router.get("/company-profiles/:id", authMiddleware, CompanyProfileController.getCompanyProfileById);
 
+router.get("/search", authMiddleware, CompanyProfileController.getFilteredCompanyProfiles);
+
 router.put("/company-profiles/:id",authMiddleware,  CompanyProfileController.updateCompanyProfile);
 
 router.delete("/company-profiles/:id", authMiddleware, CompanyProfileController.deleteCompanyProfile);

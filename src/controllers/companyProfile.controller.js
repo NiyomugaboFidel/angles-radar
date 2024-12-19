@@ -78,6 +78,92 @@ const CompanyProfileController = {
     }
   },
 
+
+  async getFilteredCompanyProfiles(req, res) {
+    try {
+      const {
+        companyStage,
+        investmentType,
+        valuationRange,
+        growthRateRange,
+        mrrRange,
+        fundingRequiredRange,
+        tags,
+      } = req.query;
+ 
+      const filterQuery = {};
+  
+      // Company Stage filter
+      if (companyStage) {
+        filterQuery.companyStage = companyStage;
+      }
+  
+      // Investment Type filter
+      if (investmentType) {
+        filterQuery.investmentsType = investmentType;
+      }
+  
+      // Valuation Range filter
+      if (valuationRange) {
+        const [min, max] = valuationRange.split('-').map(Number);
+        filterQuery['metrics.valuation'] = {
+          $gte: min,
+          $lte: max
+        };
+      }
+  
+      // Growth Rate filter
+      if (growthRateRange) {
+        const [min, max] = growthRateRange.split('-').map(Number);
+        filterQuery['metrics.growthRate'] = {
+          $gte: min,
+          $lte: max
+        };
+      }
+  
+      // MRR Range filter
+      if (mrrRange) {
+        const [min, max] = mrrRange.split('-').map(Number);
+        filterQuery['metrics.mrr'] = {
+          $gte: min,
+          $lte: max
+        };
+      }
+  
+      // Funding Required Range filter
+      if (fundingRequiredRange) {
+        const [min, max] = fundingRequiredRange.split('-').map(Number);
+        filterQuery['metrics.fundingRequired'] = {
+          $gte: min,
+          $lte: max
+        };
+      }
+  
+      // Tags filter
+      if (tags) {
+        filterQuery.interestedTags = {
+          $in: tags.split(',')
+        };
+      }
+  
+      const companies = await CompanyProfile.find(filterQuery)
+        .populate('companyId')
+        .populate('userId')
+        .sort({ createdAt: -1 });
+  
+      return res.status(200).json({
+        success: true,
+        data: companies,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error fetching filtered company profiles',
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+      });
+    }},
+  
+
   // 3. Get a single company profile by ID
   async getCompanyProfileById(req, res) {
     try {
